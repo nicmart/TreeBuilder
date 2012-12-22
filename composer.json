@@ -1,0 +1,24 @@
+{
+    "name": "nicmart/treebuilder",
+    "type": "library",
+    "description": "TreeBuilder offers some fast methods to transform tree structures (arrays, object graphs, xml documents) to php array",
+    "keywords": ["tree", "tranforms", "data"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolò Martini",
+            "email": "nicmartnic@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+
+    },
+    "autoload": {
+        "psr-0": {
+            "MainNamespace": "src/",
+            "MainNamespace\\Test": "tests"
+        }
+    }
+}
+
