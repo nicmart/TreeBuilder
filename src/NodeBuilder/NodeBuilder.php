@@ -120,6 +120,7 @@ abstract class NodeBuilder
         $value = $this->buildValue($element);
 
         $this->cacheBaseElement = false;
+        $this->cachedBaseElement = null;
 
         return array($key, $value);
     }

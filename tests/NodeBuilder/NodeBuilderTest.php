@@ -28,9 +28,10 @@ class NodeBuilderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param null $selector
+     * @param mixed $valueBilder
      * @return NodeBuilder
      */
-    private function mockedNodeBuilder($selector = null)
+    private function mockedNodeBuilder($selector = null, $valueBuilder = null)
     {
         $mock = $this->getMockBuilder('\\NodeBuilder\\NodeBuilder')
             ->setConstructorArgs(array($selector))
@@ -94,4 +95,32 @@ class NodeBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array('buildedKey', 'buildedValue'), $builder->buildKeyAndValue('any'));
     }
+
+    public function testBuildKeyAndValueCallsBaseSelectorOnlyOnce()
+    {
+        $i = 0;
+        $selector = function ($element) use (&$i) {
+            $i++;
+
+            return $element;
+        };
+
+        $nodeBuilder = new MockedNodeBuilder($selector);
+        $nodeBuilder->buildKeyAndValue('any');
+
+        $this->assertEquals(1, $i);
+    }
+}
+
+class MockedNodeBuilder extends NodeBuilder
+{
+    /**
+     * @param mixed $element
+     * @return mixed
+     */
+    public function buildValue($element)
+    {
+        return $this->baseElement($element);
+    }
+
 }
