@@ -32,9 +32,8 @@ abstract class NodeBuilder
     {
         if (!isset($baseSelector))
             $baseSelector = function($value) { return $value; };
-        elseif (!$this->isCallable($baseSelector)) {
-            throw new \InvalidArgumentException('The selector provided is not a valid selector');
-        }
+
+        $this->validateSelector($baseSelector);
 
         $this->baseSelector = $baseSelector;
         $this->keySelector = function($value) { return $value; };
@@ -70,8 +69,7 @@ abstract class NodeBuilder
      */
     public function key($keySelector)
     {
-        if (!$this->isCallable($keySelector))
-            throw new \OutOfBoundsException('The selector provided is not a valid selector');
+        $this->validateSelector($keySelector);
 
         $this->keySelector = $keySelector;
 
@@ -140,11 +138,16 @@ abstract class NodeBuilder
     }
 
     /**
-     * @param mixed $callable   A closure or an invokable object
+     * @param mixed $selector   A closure or an invokable object
+     * @throws \InvalidArgumentException
      * @return bool
      */
-    private function isCallable($callable)
+    protected function validateSelector($selector)
     {
-        return is_object($callable) && method_exists($callable, '__invoke');
+        if (!(is_object($selector) && method_exists($selector, '__invoke'))) {
+            throw new \InvalidArgumentException('You have provided an invalid selector. A selector must be
+                a closure or an invokable object'
+            );
+        };
     }
 }

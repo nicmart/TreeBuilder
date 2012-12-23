@@ -122,5 +122,4 @@ class MockedNodeBuilder extends NodeBuilder
     {
         return $this->baseElement($element);
     }
-
 }
