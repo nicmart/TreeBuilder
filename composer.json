@@ -16,8 +16,8 @@
     },
     "autoload": {
         "psr-0": {
-            "MainNamespace": "src/",
-            "MainNamespace\\Test": "tests"
+            "NodeBuilder": "src/",
+            "NodeBuilder\\Test": "tests"
         }
     }
 }
