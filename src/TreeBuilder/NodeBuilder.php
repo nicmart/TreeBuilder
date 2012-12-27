@@ -9,6 +9,8 @@
  */
 namespace TreeBuilder;
 
+use TreeBuilder\Transformation\TransformationProvider;
+
 /**
  * The base class for tree building.
  *
@@ -21,22 +23,30 @@ abstract class NodeBuilder
     private $baseSelector;
     private $keySelector;
 
+    /**
+     * @var TransformationProvider
+     */
+    private $transformationProvider;
+
     private $cacheBaseElement = false;
     private $cachedBaseElement;
 
     /**
      * @param null|callable $baseSelector
-     * @throws \InvalidArgumentException
+     * @param TransformationProvider $provider
      */
-    public function __construct($baseSelector = null)
+    public function __construct($baseSelector = null, TransformationProvider $provider = null)
     {
+        if (!isset($provider))
+            $provider = new TransformationProvider();
+
+        $this->provider = $provider;
+
         if (!isset($baseSelector))
             $baseSelector = function($value) { return $value; };
 
-        $this->validateSelector($baseSelector);
-
-        $this->baseSelector = $baseSelector;
-        $this->keySelector = function($value) { return $value; };
+        $this->baseSelector = $this->resolveSelector($baseSelector);
+        $this->keySelector = $this->resolveSelector(function($value) { return $value; });
     }
 
     /**
@@ -69,9 +79,10 @@ abstract class NodeBuilder
      */
     public function key($keySelector)
     {
-        $this->validateSelector($keySelector);
+        if (!$this->isValidSelector($keySelector) && $keySelector !== null)
+            $keySelector = func_get_args();
 
-        $this->keySelector = $keySelector;
+        $this->keySelector = $this->resolveSelector($keySelector);
 
         return $this;
     }
@@ -121,7 +132,17 @@ abstract class NodeBuilder
         $this->cachedBaseElement = null;
 
         return array($key, $value);
+
     }
+
+    /**
+     * @return TransformationProvider
+     */
+    public function getTransformationProvider()
+    {
+        return $this->provider;
+    }
+
 
     /**
      * @param $element
@@ -144,10 +165,39 @@ abstract class NodeBuilder
      */
     protected function validateSelector($selector)
     {
-        if (!(is_object($selector) && method_exists($selector, '__invoke'))) {
+        if (!$this->isValidSelector($selector)) {
             throw new \InvalidArgumentException('You have provided an invalid selector. A selector must be
                 a closure or an invokable object'
             );
         };
+    }
+
+    /**
+     * @param $selector
+     * @return bool
+     */
+    protected function isValidSelector($selector)
+    {
+        return is_object($selector) && method_exists($selector, '__invoke');
+    }
+
+    /**
+     * @param mixed $selector
+     * @return mixed|object
+     */
+    protected function resolveSelector($selector)
+    {
+        $resolved = $selector;
+
+        if (!is_object($selector) || !method_exists($selector, '__invoke')) {
+            try {
+                $resolved = call_user_func_array(array($this->provider, 'get'), $selector);
+            } catch (\Exception $e) {
+
+            }
+        }
+        $this->validateSelector($resolved);
+
+        return $resolved;
     }
 }

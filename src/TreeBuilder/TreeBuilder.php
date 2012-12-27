@@ -60,12 +60,15 @@ class TreeBuilder extends NodeBuilder
     /**
      * Returns a leaf builder linked to this node
      *
-     * @param null $baseSelector
+     * @param mixed $baseSelector
      * @return LeafBuilder
      */
     public function leaf($baseSelector = null)
     {
-        $leaf = new LeafBuilder($baseSelector);
+        if (!$this->isValidSelector($baseSelector) && $baseSelector !== null)
+            $baseSelector = func_get_args();
+
+        $leaf = new LeafBuilder($baseSelector, $this->getTransformationProvider());
 
         $leaf->setParent($this);
 
@@ -79,7 +82,10 @@ class TreeBuilder extends NodeBuilder
      */
     public function tree($baseSelector = null)
     {
-        $tree = new TreeBuilder($baseSelector);
+        if (!$this->isValidSelector($baseSelector) && $baseSelector !== null)
+            $baseSelector = func_get_args();
+
+        $tree = new TreeBuilder($baseSelector, $this->getTransformationProvider());
 
         $tree->setParent($this);
 

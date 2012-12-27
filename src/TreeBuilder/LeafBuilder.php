@@ -9,6 +9,8 @@
  */
 namespace TreeBuilder;
 
+use TreeBuilder\Transformation\TransformationProvider;
+
 /**
  * LeafBuilder class
  *
@@ -21,10 +23,11 @@ class LeafBuilder extends NodeBuilder
 
     /**
      * @param mixed $baseSelector
+     * @param Transformation\TransformationProvider $provider
      */
-    public function __construct($baseSelector = null)
+    public function __construct($baseSelector = null, TransformationProvider $provider = null)
     {
-        parent::__construct($baseSelector);
+        parent::__construct($baseSelector, $provider);
 
         $this->valueSelector = function($element) { return $element; };
     }
@@ -36,9 +39,7 @@ class LeafBuilder extends NodeBuilder
      */
     public function value($valueSelector)
     {
-        $this->validateSelector($valueSelector);
-
-        $this->valueSelector = $valueSelector;
+        $this->valueSelector = $this->resolveSelector($valueSelector);
     }
 
     /**

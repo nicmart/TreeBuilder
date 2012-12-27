@@ -10,6 +10,7 @@
 namespace TreeBuilder\Test\NodeBuilderTest;
 
 use TreeBuilder\NodeBuilder;
+use TreeBuilder\Transformation\TransformationProvider;
 
 /**
  * Unit tests for class NodeBuilderTest
@@ -28,13 +29,13 @@ class NodeBuilderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param null|callable $selector
-     * @param mixed $valueBilder
+     * @param mixed $provider
      * @return NodeBuilder
      */
-    private function mockedNodeBuilder($selector = null, $valueBuilder = null)
+    private function mockedNodeBuilder($selector = null, TransformationProvider $provider = null)
     {
         $mock = $this->getMockBuilder('\\TreeBuilder\\NodeBuilder')
-            ->setConstructorArgs(array($selector))
+            ->setConstructorArgs(array($selector, $provider))
             ->setMethods(array('buildValue'))
             ->getMock()
         ;
@@ -109,6 +110,23 @@ class NodeBuilderTest extends \PHPUnit_Framework_TestCase
         $nodeBuilder->buildKeyAndValue('any');
 
         $this->assertEquals(1, $i);
+    }
+
+    public function testWithTransformationProvider()
+    {
+        $providerMock = $this->getMock('TreeBuilder\\Transformation\\TransformationProvider');
+
+        $providerMock
+            ->expects($this->any())
+            ->method('get')
+            ->with($this->equalTo('arrayValue'), $this->equalTo('key'))
+            ->will($this->returnValue(function($value) { return $value['key']; }))
+        ;
+        $mock = $this->mockedNodeBuilder(null, $providerMock);
+
+        $mock->key('arrayValue', 'key');
+
+        //$this->assertEquals('value', $mock->buildKey(array('key' => 'value')));
     }
 }
 
