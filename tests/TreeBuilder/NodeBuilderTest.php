@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace NodeBuilder\Test\NodeBuilderTest;
+namespace TreeBuilder\Test\NodeBuilderTest;
 
-use NodeBuilder\NodeBuilder;
+use TreeBuilder\NodeBuilder;
 
 /**
  * Unit tests for class NodeBuilderTest
@@ -27,13 +27,13 @@ class NodeBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param null $selector
+     * @param null|callable $selector
      * @param mixed $valueBilder
      * @return NodeBuilder
      */
     private function mockedNodeBuilder($selector = null, $valueBuilder = null)
     {
-        $mock = $this->getMockBuilder('\\NodeBuilder\\NodeBuilder')
+        $mock = $this->getMockBuilder('\\TreeBuilder\\NodeBuilder')
             ->setConstructorArgs(array($selector))
             ->setMethods(array('buildValue'))
             ->getMock()

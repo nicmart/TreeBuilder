@@ -7,10 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace NodeBuilder\Test;
+namespace TreeBuilder\Test;
 
-use NodeBuilder\NodeBuilder;
-use NodeBuilder\TreeBuilder;
+use TreeBuilder\NodeBuilder;
+use TreeBuilder\TreeBuilder;
 
 /**
  * Unit tests for class TreeBuilderTest
@@ -36,7 +36,7 @@ class TreeBuilderTest extends \PHPUnit_Framework_TestCase
      */
     private function mockedNode($selector)
     {
-        $mock = $this->getMockBuilder('NodeBuilder\NodeBuilder')
+        $mock = $this->getMockBuilder('TreeBuilder\NodeBuilder')
             ->setConstructorArgs(array($selector))
             ->setMethods(array('buildValue'))
             ->getMockForAbstractClass()
@@ -99,7 +99,7 @@ class TreeBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $leaf = $this->treeBuilder->leaf();
 
-        $this->assertInstanceOf('NodeBuilder\\LeafBuilder', $leaf);
+        $this->assertInstanceOf('TreeBuilder\\LeafBuilder', $leaf);
     }
 
     public function testLeafSetParentBuilder()
@@ -113,7 +113,7 @@ class TreeBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $leaf = $this->treeBuilder->tree();
 
-        $this->assertInstanceOf('NodeBuilder\\TreeBuilder', $leaf);
+        $this->assertInstanceOf('TreeBuilder\\TreeBuilder', $leaf);
     }
 
     public function testTreeSetParentBuilder()
