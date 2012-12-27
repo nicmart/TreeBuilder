@@ -27,11 +27,11 @@ class TransformationProvider
      * The transformation is supposed to accept as the first value the value to transform,
      * and other optional values as other arguments.
      *
-     * @param $name
-     * @param $transformation
-     * @return TransformationProvider
+     * @param string $name              The name of the transformation
+     * @param callable $transformation  The transformation
+     * @return TransformationProvider   The current instance
      */
-    public function registerTransformation($name, $transformation)
+    public function register($name, $transformation)
     {
         $this->validateTransformation($transformation);
 
@@ -41,23 +41,34 @@ class TransformationProvider
     }
 
     /**
+     * Returns true if there is a transformation registered with the given name
+     *
+     * @param string $name      The name of the transformation
+     * @return bool             True if the trasnformation is defined, false otherwise
+     */
+    public function has($name)
+    {
+        return isset($this->transformations[$name]);
+    }
+
+    /**
      * Returns a registered transformation.
      * If there are other arguments in addition to the transformation name, a curried version of
      * the transformation is returned.
      *
-     * @param $transformationName
+     * @param string $transformationName
      *
      * @throws \InvalidArgumentException
      *
      * @return callable
      */
-    public function getTransformation($transformationName)
+    public function get($transformationName)
     {
         $args = func_get_args();
         array_shift($args);
 
-        if (!isset($this->transformations[$transformationName]))
-            throw new \InvalidArgumentException("There is no transformation registered with name $name");
+        if (!$this->has($transformationName))
+            throw new \InvalidArgumentException("There is no transformation registered with name $transformationName");
 
         $transformation = $this->transformations[$transformationName];
 
@@ -73,17 +84,19 @@ class TransformationProvider
     }
 
     /**
+     * Performs a transformation using a registered transformation.
      *
-     * @param $transformationName
-     * @param $valueToTransform
-     * @return mixed
+     * @param string $transformationName    The name of the transformation
+     * @param mixed $valueToTransform       The value to transform
+     *
+     * @return mixed                        The transformed value
      */
     public function transform($transformationName, $valueToTransform)
     {
         $transformationArgs = array_slice(func_get_args(), 2);
         array_unshift($transformationArgs, $transformationName);
 
-        $transformation = call_user_func_array(array($this, 'getTransformation'), $transformationArgs);
+        $transformation = call_user_func_array(array($this, 'get'), $transformationArgs);
 
         return $transformation($valueToTransform);
     }
