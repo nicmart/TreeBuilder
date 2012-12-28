@@ -41,6 +41,63 @@ class TransformationProvider
     }
 
     /**
+     * Imports static public methods of a class
+     * If $methods is an empty array, import all the public static methods.
+     * If a $prefix is specified, the methods will be registered with the method name prefixed by $prefix.
+     *
+     * @param string $className     The class name
+     * @param array $methods        An array of method names to import. With an empty array it imports all public static methods
+     * @param string $prefix        An optional prefix for the transformation names
+     *
+     * @return TransformationProvider   The current instance
+     */
+    public function importStatics($className, $methods = array(), $prefix = '')
+    {
+        if (!$methods) {
+            $reflection = new \ReflectionClass($className);
+
+            foreach ($reflection->getMethods(\ReflectionMethod::IS_STATIC) as $refMethod) {
+                if ($refMethod->isPublic())
+                    $methods[] = $refMethod->getName();
+            }
+        }
+
+        foreach ($methods as $method) {
+            $this->register($prefix . $method, array($className, $method));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Imports public methods of an instance of a class.
+     * If $methods is an empty array, imports all the public methods.
+     * If a $prefix is provided, the transformation will be registered with the method name prefixed by $prefix.
+     * 
+     * @param mixed $object         An object
+     * @param array $methods        An array of method names to import. With an empty array it imports all public methods
+     * @param string $prefix        An optional prefix for the transformation names
+     *
+     * @return TransformationProvider   The current instance
+     */
+    public function importMethods($object, $methods = array(), $prefix = '')
+    {
+        if (!$methods) {
+            $reflection = new \ReflectionClass(get_class($object));
+
+            foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $refMethod) {
+                $methods[] = $refMethod->getName();
+            }
+        }
+
+        foreach ($methods as $method) {
+            $this->register($prefix . $method, array($object, $method));
+        }
+
+        return $this;
+    }
+
+    /**
      * Returns true if there is a transformation registered with the given name
      *
      * @param string $name      The name of the transformation
