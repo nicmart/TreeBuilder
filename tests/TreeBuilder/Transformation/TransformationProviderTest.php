@@ -71,8 +71,8 @@ class TransformationProviderTest extends \PHPUnit_Framework_TestCase
     {
         $this->provider->importStatics('\\TreeBuilder\\Test\Transformation\\MethodsCollection');
 
-        $this->assertEquals(array('\\TreeBuilder\\Test\\Transformation\\MethodsCollection', 'static_method_1'), $this->provider->get('static_method_1'));
-        $this->assertEquals(array('\\TreeBuilder\\Test\\Transformation\\MethodsCollection', 'static_method_2'), $this->provider->get('static_method_2'));
+        $this->assertEquals('static_method_1', call_user_func($this->provider->get('static_method_1'), ''));
+        $this->assertEquals('static_method_2', call_user_func($this->provider->get('static_method_2'), ''));
 
         $this->assertFalse($this->provider->has('method1'));
     }
@@ -81,7 +81,7 @@ class TransformationProviderTest extends \PHPUnit_Framework_TestCase
     {
         $this->provider->importStatics('\\TreeBuilder\\Test\Transformation\\MethodsCollection', array('static_method_1'));
 
-        $this->assertEquals(array('\\TreeBuilder\\Test\\Transformation\\MethodsCollection', 'static_method_1'), $this->provider->get('static_method_1'));
+        $this->assertEquals('static_method_1', call_user_func($this->provider->get('static_method_1'), ''));
 
         $this->assertFalse($this->provider->has('static_method_2'));
     }
@@ -92,8 +92,8 @@ class TransformationProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->provider->importMethods($collection);
 
-        $this->assertEquals(array($collection, 'method1'), $this->provider->get('method1'));
-        $this->assertEquals(array($collection, 'static_method_2'), $this->provider->get('static_method_2'));
+        $this->assertEquals('method1', call_user_func($this->provider->get('method1'), ''));
+        $this->assertEquals('static_method_2', call_user_func($this->provider->get('static_method_2'), ''));
 
         $this->assertFalse($this->provider->has('protected_method1'));
     }
@@ -111,13 +111,13 @@ class TransformationProviderTest extends \PHPUnit_Framework_TestCase
 
 class MethodsCollection
 {
-    protected function protected_method1() {}
+    protected function protected_method1() { return 'protected_method1'; }
 
-    public static function static_method_1() {}
+    public static function static_method_1() { return 'static_method_1'; }
 
-    public static function static_method_2() {}
+    public static function static_method_2() { return 'static_method_2'; }
 
-    public function method1() {}
+    public function method1() { return 'method1'; }
 
-    public function method2() {}
+    public function method2() { return 'method2'; }
 }

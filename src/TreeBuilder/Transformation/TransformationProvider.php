@@ -129,8 +129,8 @@ class TransformationProvider
 
         $transformation = $this->transformations[$transformationName];
 
-        if (count($args) === 0)
-            return $transformation;
+/*        if (count($args) === 0)
+            return $transformation;*/
 
         return function($value) use ($transformation, $args)
         {
