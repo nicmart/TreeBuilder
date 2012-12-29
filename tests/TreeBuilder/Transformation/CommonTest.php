@@ -49,6 +49,19 @@ class CommonTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('bleahxxxyyy', $common->method(new Mock, 'getBlaBla', 'xxx', 'yyy'));
     }
+
+    public function testCast()
+    {
+        $common = new Common;
+
+        $value = 'a';
+
+        $this->assertInternalType('bool', $common->cast($value, 'bool'));
+        $this->assertInternalType('int', $common->cast($value, 'int'));
+        $this->assertInternalType('string', $common->cast(123, 'string'));
+        $this->assertInternalType('array', $common->cast($value, 'array'));
+        $this->assertInternalType('float', $common->cast($value, 'float'));
+    }
 }
 
 class Mock

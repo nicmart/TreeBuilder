@@ -75,4 +75,29 @@ class Common
 
         return call_user_func_array(array($object, $methodName), $args);
     }
+
+    /**
+     * Cast a value into a type
+     *
+     * @param $value
+     * @param string $type
+     * @return array|bool|float|int|string
+     */
+    public static function cast($value, $type)
+    {
+        switch ($type) {
+            case 'int':
+            case 'integer':
+                return (int) $value;
+            case 'float':
+                return (float) $value;
+            case 'bool':
+            case 'boolean':
+                return (bool) $value;
+            case 'array':
+                return (array) $value;
+            case 'string':
+                return (string) $value;
+        }
+    }
 }
