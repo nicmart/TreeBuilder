@@ -42,11 +42,8 @@ abstract class NodeBuilder
 
         $this->provider = $provider;
 
-        if (!isset($baseSelector))
-            $baseSelector = function($value) { return $value; };
-
-        $this->baseSelector = $this->resolveSelector($baseSelector);
-        $this->keySelector = $this->resolveSelector(function($value) { return $value; });
+        $this->baseSelector = $this->resolveSelector(array($baseSelector));
+        $this->keySelector = $this->resolveSelector(array(null));
     }
 
     /**
@@ -79,10 +76,7 @@ abstract class NodeBuilder
      */
     public function key($keySelector)
     {
-        if (!$this->isValidSelector($keySelector) && $keySelector !== null)
-            $keySelector = func_get_args();
-
-        $this->keySelector = $this->resolveSelector($keySelector);
+        $this->keySelector = $this->resolveSelector(func_get_args());
 
         return $this;
     }
@@ -109,9 +103,7 @@ abstract class NodeBuilder
      */
     public function buildKey($element)
     {
-        $keySelector = $this->keySelector;
-
-        return $keySelector($this->baseElement($element));
+        return call_user_func($this->keySelector, $this->baseElement($element));
     }
 
     /**
@@ -162,7 +154,7 @@ abstract class NodeBuilder
     {
         if (!$this->cacheBaseElement || !isset($this->cachedBaseElement)) {
             $baseSelector = $this->baseSelector;
-            $this->cachedBaseElement = $baseSelector($element);
+            $this->cachedBaseElement = call_user_func($baseSelector, $element);
         }
 
         return $this->cachedBaseElement;
@@ -188,26 +180,43 @@ abstract class NodeBuilder
      */
     protected function isValidSelector($selector)
     {
-        return is_object($selector) && method_exists($selector, '__invoke');
+        return is_callable($selector);
+        //return is_object($selector) && method_exists($selector, '__invoke');
     }
 
     /**
      * @param mixed $selector
      * @return mixed|object
      */
-    protected function resolveSelector($selector)
+    protected function resolveSelector(array $selector)
     {
-        $resolved = $selector;
+        if (count($selector) == 0)
+            $selector = array(null);
 
-        if (!is_object($selector) || !method_exists($selector, '__invoke')) {
+        $resolved = $selector[0];
+
+        if (is_null($resolved))
+            $resolved = function($value) { return $value; };
+
+        if (!$this->isValidSelector($resolved)) {
             try {
                 $resolved = call_user_func_array(array($this->provider, 'get'), $selector);
             } catch (\Exception $e) {
 
             }
         }
+
         $this->validateSelector($resolved);
 
         return $resolved;
+    }
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    private function isClosureOrInvokable($value)
+    {
+        return is_object($value) && method_exists($value, '__invoke');
     }
 }

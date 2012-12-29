@@ -39,6 +39,18 @@ class Common
     }
 
     /**
+     * Returns a constant value
+     *
+     * @param $value
+     * @param $constant
+     * @return mixed
+     */
+    public static function value($value, $constant)
+    {
+        return $constant;
+    }
+
+    /**
      * @param $object
      * @param string $property
      * @return mixed

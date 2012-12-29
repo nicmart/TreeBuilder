@@ -29,17 +29,21 @@ class LeafBuilder extends NodeBuilder
     {
         parent::__construct($baseSelector, $provider);
 
-        $this->valueSelector = function($element) { return $element; };
+        $this->value(null);
     }
 
     /**
      * Specify the selector used to retrieve node value
      *
      * @param mixed $valueSelector
+     *
+     * @return \TreeBuilder\LeafBuilder The current instance
      */
     public function value($valueSelector)
     {
-        $this->valueSelector = $this->resolveSelector($valueSelector);
+        $this->valueSelector = $this->resolveSelector(func_get_args());
+
+        return $this;
     }
 
     /**
@@ -50,8 +54,6 @@ class LeafBuilder extends NodeBuilder
      */
     public function buildValue($element)
     {
-        $valueSelector = $this->valueSelector;
-
-        return $valueSelector($this->baseElement($element));
+        return call_user_func($this->valueSelector, $this->baseElement($element));
     }
 }

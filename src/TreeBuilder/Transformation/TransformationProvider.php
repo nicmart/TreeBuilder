@@ -155,7 +155,7 @@ class TransformationProvider
 
         $transformation = call_user_func_array(array($this, 'get'), $transformationArgs);
 
-        return $transformation($valueToTransform);
+        return call_user_func($transformation, $valueToTransform);
     }
 
     private function validateTransformation($transformation)

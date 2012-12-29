@@ -20,7 +20,7 @@ class TreeBuilder extends NodeBuilder
     /**
      * @var NodeBuilder[]
      */
-    private $children;
+    private $children = array();
     /**
      * @param mixed $element
      * @return mixed
@@ -61,15 +61,15 @@ class TreeBuilder extends NodeBuilder
      * Returns a leaf builder linked to this node
      *
      * @param mixed $baseSelector
-     * @return LeafBuilder
+     * @return \TreeBuilder\LeafBuilder
      */
     public function leaf($baseSelector = null)
     {
-        if (!$this->isValidSelector($baseSelector) && $baseSelector !== null)
-            $baseSelector = func_get_args();
+        $baseSelector = $this->resolveSelector(func_get_args());
 
         $leaf = new LeafBuilder($baseSelector, $this->getTransformationProvider());
 
+        $this->addChild($leaf);
         $leaf->setParent($this);
 
         return $leaf;
@@ -82,8 +82,7 @@ class TreeBuilder extends NodeBuilder
      */
     public function tree($baseSelector = null)
     {
-        if (!$this->isValidSelector($baseSelector) && $baseSelector !== null)
-            $baseSelector = func_get_args();
+        $baseSelector = $this->resolveSelector(func_get_args());
 
         $tree = new TreeBuilder($baseSelector, $this->getTransformationProvider());
 
