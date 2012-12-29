@@ -62,6 +62,24 @@ class CommonTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $common->cast($value, 'array'));
         $this->assertInternalType('float', $common->cast($value, 'float'));
     }
+
+    public function testImplode()
+    {
+        $common = new Common;
+
+        $array = array('a', 'b', 'c');
+
+        $this->assertEquals(implode('-', $array), $common->implode($array, '-'));
+    }
+
+    public function testExplode()
+    {
+        $common = new Common;
+
+        $string = "a-b-c";
+
+        $this->assertEquals(explode('-', $string), $common->explode($string, '-'));
+    }
 }
 
 class Mock

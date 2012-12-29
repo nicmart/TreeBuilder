@@ -100,4 +100,25 @@ class Common
                 return (string) $value;
         }
     }
+
+    /**
+     * @param $value
+     * @param string $delimiter
+     * @return string
+     */
+    public static function implode(array $value, $delimiter)
+    {
+        return implode($delimiter, $value);
+    }
+
+    /**
+     * @param string $value
+     * @param $delimiter
+     *
+     * @return array
+     */
+    public static function explode($value, $delimiter)
+    {
+        return explode($delimiter, $value);
+    }
 }
