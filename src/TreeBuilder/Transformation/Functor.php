@@ -38,7 +38,7 @@ class Functor
         };
     }
 
-    private function validate($function)
+    private static function validate($function)
     {
         if (!is_callable($function))
             throw new \InvalidArgumentException('All functions must be callable objects');
