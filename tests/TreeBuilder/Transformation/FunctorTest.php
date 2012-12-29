@@ -31,4 +31,15 @@ class FunctorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(-30, $composition(5, 10));
         $this->assertEquals(8, $composition(-5, 1));
     }
+
+    public function testComposeWithOneArgument()
+    {
+        $add = function ($a, $b) { return $a + $b; };
+
+        $composition = Functor::compose($add);
+
+        $this->assertEquals(5, $composition(2, 3));
+        $this->assertEquals(15, $composition(5, 10));
+        $this->assertEquals(-4, $composition(-5, 1));
+    }
 }
