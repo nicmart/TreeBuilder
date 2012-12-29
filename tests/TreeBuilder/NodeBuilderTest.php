@@ -126,7 +126,14 @@ class NodeBuilderTest extends \PHPUnit_Framework_TestCase
 
         $mock->key('arrayValue', 'key');
 
-        //$this->assertEquals('value', $mock->buildKey(array('key' => 'value')));
+        $this->assertEquals('value', $mock->buildKey(array('key' => 'value')));
+    }
+
+    public function testInvoke()
+    {
+        $mock = $this->mockedNodeBuilder();
+
+        $this->assertEquals($mock->buildValue('blablabla'), $mock('blablabla'));
     }
 }
 

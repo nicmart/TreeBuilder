@@ -143,6 +143,16 @@ abstract class NodeBuilder
         return $this->provider;
     }
 
+    /**
+     * Each node builder is an invokable object
+     *
+     * @param $value
+     * @return mixed
+     */
+    public function __invoke($value)
+    {
+        return $this->buildValue($value);
+    }
 
     /**
      * @param $element
