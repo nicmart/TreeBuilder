@@ -70,6 +70,34 @@ class Functionals
     }
 
     /**
+     * Combine an arbitrary long list of functions into a single function that returns
+     * an array in which the n-th element is the result of the n-th function.
+     *
+     * @param callable $func,... An arbitrary long list of functions
+     *
+     * @return callable
+     */
+    public static function combine(/* $func1, $func2, ... */)
+    {
+        $functions = func_get_args();
+
+        foreach ($functions as $function) {
+            static::validate($function);
+        }
+
+        return function() use ($functions) {
+            $result = array();
+            $args = func_get_args();
+
+            foreach ($functions as $function) {
+                $result[] = call_user_func_array($function, $args);
+            }
+
+            return $result;
+        };
+    }
+
+    /**
      * Returns the composition of a list of functions.
      *
      * @param callable $function The leftmost function of the composition chain

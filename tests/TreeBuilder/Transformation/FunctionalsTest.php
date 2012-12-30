@@ -71,4 +71,18 @@ class FunctionalsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('1) first 2) second and third', $partial('first', 'second', 'and third'));
     }
+
+    public function testCombine()
+    {
+        $identity = function($value) { return $value; };
+        $double = function($value) { return 2 * $value; };
+        $quadruple = function ($value) { return 4 * $value; };
+
+        $combined = Functionals::combine($identity, $double, $quadruple);
+
+        $this->assertEquals(array(1,2,4), $combined(1));
+        $this->assertEquals(array(2,4,8), $combined(2));
+        $this->assertEquals(array(10,20,40), $combined(10));
+        $this->assertEquals(array(-3,-6,-12), $combined(-3));
+    }
 }
