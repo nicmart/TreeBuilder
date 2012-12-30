@@ -52,4 +52,14 @@ class FunctionalsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($add(1,2), $add2(array(1, 2)));
         $this->assertEquals($add(3,24), $add2(array(3, 24)));
     }
+
+    public function testArrayToArgs()
+    {
+        $add = function ($ary) { return $ary[0] + $ary[1]; };
+
+        $add2 = Functionals::array_to_args($add);
+
+        $this->assertEquals($add(array(1, 2)), $add2(1,2));
+        $this->assertEquals($add(array(3, 24)), $add2(3,24));
+    }
 }

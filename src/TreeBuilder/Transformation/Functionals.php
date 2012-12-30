@@ -33,6 +33,19 @@ class Functionals
     }
 
     /**
+     * The inverse of @see Functionals::array_to_args
+     *
+     * @param callable $function
+     * @return callable
+     */
+    public static function array_to_args($function)
+    {
+        return function() use($function) {
+            return call_user_func($function, func_get_args());
+        };
+    }
+
+    /**
      * Returns the composition of a list of functions.
      *
      * @param callable $function The leftmost function of the composition chain
