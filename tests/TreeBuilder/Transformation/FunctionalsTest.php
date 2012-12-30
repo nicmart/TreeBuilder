@@ -10,14 +10,14 @@
 namespace TreeBuilder\Test\Transformation;
 
 /**
- * Unit tests for class Functor
+ * Unit tests for class Functionals
  *
  * @package    TreeBuilder
  * @author     Nicolò Martini <nicmartnic@gmail.com>
  */
-use TreeBuilder\Transformation\Functor;
+use TreeBuilder\Transformation\Functionals;
 
-class FunctorTest extends \PHPUnit_Framework_TestCase
+class FunctionalsTest extends \PHPUnit_Framework_TestCase
 {
     public function testCompose()
     {
@@ -25,7 +25,7 @@ class FunctorTest extends \PHPUnit_Framework_TestCase
         $opposite = function($n) { return -$n; };
         $double = function($n) { return 2 * $n; };
 
-        $composition = Functor::compose($opposite, $double, $add);
+        $composition = Functionals::compose($opposite, $double, $add);
 
         $this->assertEquals(-10, $composition(2, 3));
         $this->assertEquals(-30, $composition(5, 10));
@@ -36,10 +36,20 @@ class FunctorTest extends \PHPUnit_Framework_TestCase
     {
         $add = function ($a, $b) { return $a + $b; };
 
-        $composition = Functor::compose($add);
+        $composition = Functionals::compose($add);
 
         $this->assertEquals(5, $composition(2, 3));
         $this->assertEquals(15, $composition(5, 10));
         $this->assertEquals(-4, $composition(-5, 1));
+    }
+
+    public function testArgsToArray()
+    {
+        $add = function ($a, $b) { return $a + $b; };
+
+        $add2 = Functionals::args_to_array($add);
+
+        $this->assertEquals($add(1,2), $add2(array(1, 2)));
+        $this->assertEquals($add(3,24), $add2(array(3, 24)));
     }
 }
