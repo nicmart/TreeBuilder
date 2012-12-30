@@ -115,4 +115,32 @@ class FunctionalsTest extends \PHPUnit_Framework_TestCase
         $g = $uncombined[0];
         $g('value');
     }
+
+    public function testCurry()
+    {
+        $add = function ($a, $b, $c) { return $a + $b + $c; };
+
+        $curried = Functionals::curry($add);
+
+        $uncurried = function($a, $b, $c) use ($curried) {
+            $func1 = $curried($a);
+            $func2 = $func1($b);
+
+            return $func2($c);
+        };
+
+        $this->assertEquals($add(1,2,3), $uncurried(1,2,3));
+        $this->assertEquals($add(1,11,3), $uncurried(1,11,3));
+        $this->assertEquals($add(28,2,99), $uncurried(28,2,99));
+    }
+
+    public function testUncurry()
+    {
+        $add = function($a, $b, $c) { return $a + $b + $c; };
+        $add2 = Functionals::uncurry(Functionals::curry($add, 3), 3);
+
+        $this->assertEquals($add(1,2,3), $add2(1,2,3));
+        $this->assertEquals($add(11,21,3), $add2(11,21,3));
+        $this->assertEquals($add(80,3,40), $add2(80,3,40));
+    }
 }

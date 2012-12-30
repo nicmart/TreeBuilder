@@ -154,6 +154,51 @@ class Functionals
         };
     }
 
+    /**
+     * Get a curried version of the function (@link http://en.wikipedia.org/wiki/Currying)
+     * If $argsArgument is null, it tries to find the number of arguments through reflection. This of course
+     * does not give the expected results when the function use undeclared arguments through func_get_args()
+     *
+     * @param callable $function
+     * @param null $argsNumber
+     * @return callable
+     */
+    public static function curry($function, $argsNumber = null)
+    {
+        if (is_null($argsNumber)) {
+            $refFunction = new \ReflectionFunction($function);
+            $argsNumber = $refFunction->getNumberOfParameters();
+        }
+
+        if ($argsNumber <= 1)
+            return $function;
+
+        return function($x) use ($function, $argsNumber) {
+            return Functionals::curry(Functionals::partial($function, array($x)), $argsNumber - 1);
+        };
+    }
+
+    /**
+     * The inverse of @see Functionals::curry
+     *
+     * @param callable $curriedFunction
+     * @param int $argsNumber
+     * @return callable
+     */
+    public static function uncurry($curriedFunction, $argsNumber)
+    {
+        if ($argsNumber <= 1)
+            return $curriedFunction;
+
+        return function() use ($curriedFunction, $argsNumber) {
+            $args = func_get_args();
+            $x = array_shift($args);
+            $f = call_user_func($curriedFunction, $x);
+
+            return call_user_func_array(Functionals::uncurry($f, $argsNumber - 1), $args);
+        };
+    }
+
     private static function validate($function)
     {
         if (!is_callable($function))
