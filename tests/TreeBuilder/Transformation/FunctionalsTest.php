@@ -62,4 +62,13 @@ class FunctionalsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($add(array(1, 2)), $add2(1,2));
         $this->assertEquals($add(array(3, 24)), $add2(3,24));
     }
+
+    public function testPartial()
+    {
+        $concat = function() { return implode(' ', func_get_args()); };
+
+        $partial = Functionals::partial($concat, array(0 => '1)', 2 => '2)'));
+
+        $this->assertEquals('1) first 2) second and third', $partial('first', 'second', 'and third'));
+    }
 }

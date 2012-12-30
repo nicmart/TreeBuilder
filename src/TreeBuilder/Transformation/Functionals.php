@@ -46,6 +46,30 @@ class Functionals
     }
 
     /**
+     * Get a partial version of a function, i.e. fix some arguments and returns a function
+     * of the remaining arguments.
+     *
+     * @param callable $function
+     * @param array $fixedArgs The array of fixed args. The keys represent the arguments positions
+     *                         in the main function arguments list
+     * @return callable
+     */
+    public static function partial($function, array $fixedArgs = array())
+    {
+        return function() use($function, $fixedArgs) {
+            $partialArgs = func_get_args();
+            $fullArgs = array();
+            $totalArgs = count($partialArgs) + count($fixedArgs);
+
+            for ($i = 0; $i < $totalArgs; $i++) {
+                $fullArgs[] = isset($fixedArgs[$i]) ? $fixedArgs[$i] : array_shift($partialArgs);
+            }
+
+            return call_user_func_array($function, $fullArgs);
+        };
+    }
+
+    /**
      * Returns the composition of a list of functions.
      *
      * @param callable $function The leftmost function of the composition chain
