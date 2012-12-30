@@ -85,4 +85,34 @@ class FunctionalsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(10,20,40), $combined(10));
         $this->assertEquals(array(-3,-6,-12), $combined(-3));
     }
+
+    public function testUncombine()
+    {
+        $f = function($a, $b) { return array($a + $b, $a - $b, $a * $b); };
+
+        list($add, $minus, $times, $null) = Functionals::uncombine($f, 4);
+
+        $this->assertEquals(10, $add(7, 3));
+        $this->assertEquals(3, $add(1, 2));
+        $this->assertEquals(10, $minus(15, 5));
+        $this->assertEquals(3, $minus(6, 3));
+        $this->assertEquals(18, $times(6, 3));
+        $this->assertEquals(48, $times(6, 8));
+
+        $this->assertNull($null(14, 52));
+        $this->assertNull($null(0, 0));
+    }
+
+    /**
+     * @expectedException \UnexpectedValueException
+     */
+    public function testUncombineWhenOriginalFunctionDoesNotReturnsArray()
+    {
+        $f = function() { return 2; };
+
+        $uncombined = Functionals::uncombine($f, 2);
+
+        $g = $uncombined[0];
+        $g('value');
+    }
 }

@@ -98,6 +98,34 @@ class Functionals
     }
 
     /**
+     * The inverse of @see Functionals::combine. Here we have to specify the array length of the
+     * original function results. If the function returns an array of length < $arrayLength,
+     * then the generated functions at positions >= length will return a null value.
+     *
+     * @param callable $function A functions that returns arrays
+     * @param int $arrayLength The length of the arrays returned by $function
+     * @return array An array of callables
+     * @throws \UnexpectedValueException
+     */
+    public static function uncombine($function, $arrayLength)
+    {
+        $functions = array();
+
+        for ($i = 0; $i < $arrayLength; $i++) {
+            $functions[] = function() use($function, $i) {
+                $fullResult = call_user_func_array($function, func_get_args());
+
+                if (!is_array($fullResult))
+                    throw new \UnexpectedValueException('Functionals::uncombine requires that original function returns always an array.');
+
+                return isset($fullResult[$i]) ? $fullResult[$i] : null;
+            };
+        }
+
+        return $functions;
+    }
+
+    /**
      * Returns the composition of a list of functions.
      *
      * @param callable $function The leftmost function of the composition chain
@@ -129,6 +157,6 @@ class Functionals
     private static function validate($function)
     {
         if (!is_callable($function))
-            throw new \InvalidArgumentException('All functions must be callable objects');
+            throw new \InvalidArgumentException('All functions managed by Functional must be callable objects');
     }
 }
