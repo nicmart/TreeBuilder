@@ -136,4 +136,15 @@ class TreeBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->treeBuilder, $leaf->getParent());
     }
+
+    public function testCounterKeySelectorIsAutomaticallySetForChildren()
+    {
+        $child1 = $this->treeBuilder->leaf();
+        $child2 = $this->treeBuilder->tree();
+        $child3 = $this->treeBuilder->each();
+
+        $keys = array($child1->buildKey(''), $child2->buildKey(''), $child3->buildKey(''));
+
+        $this->assertEquals(array(0,1,2), $keys);
+    }
 }

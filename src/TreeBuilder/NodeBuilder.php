@@ -43,6 +43,7 @@ abstract class NodeBuilder
         $this->provider = $provider;
 
         $this->baseSelector = $this->resolveSelector(array($baseSelector));
+
         $this->keySelector = $this->resolveSelector(array(null));
     }
 
