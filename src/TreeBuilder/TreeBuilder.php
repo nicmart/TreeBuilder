@@ -19,7 +19,7 @@ use TreeBuilder\Transformation\TransformationProvider;
  */
 class TreeBuilder extends NodeBuilder
 {
-    private $counterSelector;
+    protected $keyCounter = 0;
 
     /**
      * @var NodeBuilder[]
@@ -33,6 +33,7 @@ class TreeBuilder extends NodeBuilder
     {
         $result = array();
         $baseElement = $this->baseElement($element);
+        $this->keyCounter = 0;
 
         foreach ($this->getChildren() as $child) {
             list($key, $value) = $child->buildKeyAndValue($baseElement);
@@ -91,6 +92,7 @@ class TreeBuilder extends NodeBuilder
 
         $tree = new TreeBuilder($baseSelector, $this->getTransformationProvider());
 
+        $this->addChild($tree);
         $tree->setParent($this);
         $tree->key($this->keyCounterSelector());
 
@@ -108,6 +110,7 @@ class TreeBuilder extends NodeBuilder
 
         $tree = new ForeachTreeBuilder($baseSelector, $this->getTransformationProvider());
 
+        $this->addChild($tree);
         $tree->setParent($this);
         $tree->key($this->keyCounterSelector());
 
@@ -116,10 +119,9 @@ class TreeBuilder extends NodeBuilder
 
     private function keyCounterSelector()
     {
-        if (!isset($this->counterSelector)) {
-            $this->counterSelector = function() { static $i = 0; return $i++; };
-        }
-
-        return $this->counterSelector;
+        $counter = &$this->keyCounter;
+        return function() use(&$counter) {
+              return $counter++;
+        };
     }
 }

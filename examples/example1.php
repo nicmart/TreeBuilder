@@ -34,6 +34,12 @@ $tree
                 );
             })
     ->end()
+    ->each('element', 'related')
+        ->key('value', 'related titles')
+        ->leaf()
+            ->value('element', 'title')
+        ->end()
+    ->end()
 ;
 
 $book = array(
