@@ -107,7 +107,7 @@ abstract class NodeBuilder
     }
 
     /**
-     * Call this function for performance reson. In this way the baseElement
+     * Call this function for performance resons. In this way the baseElement
      * selector is called only once.
      *
      * @param mixed $element    The origin element
