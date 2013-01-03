@@ -122,4 +122,18 @@ class TreeBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->treeBuilder, $leaf->getParent());
     }
+
+    public function testEach()
+    {
+        $leaf = $this->treeBuilder->each();
+
+        $this->assertInstanceOf('TreeBuilder\\ForeachTreeBuilder', $leaf);
+    }
+
+    public function testEachSetParentBuilder()
+    {
+        $leaf = $this->treeBuilder->each();
+
+        $this->assertEquals($this->treeBuilder, $leaf->getParent());
+    }
 }

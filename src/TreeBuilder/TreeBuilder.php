@@ -90,4 +90,20 @@ class TreeBuilder extends NodeBuilder
 
         return $tree;
     }
+
+    /**
+     * Returns a foreach-tree-builder linked to this node
+     * @param null $baseSelector
+     * @return ForeachTreeBuilder
+     */
+    public function each($baseSelector = null)
+    {
+        $baseSelector = $this->resolveSelector(func_get_args());
+
+        $tree = new ForeachTreeBuilder($baseSelector, $this->getTransformationProvider());
+
+        $tree->setParent($this);
+
+        return $tree;
+    }
 }
