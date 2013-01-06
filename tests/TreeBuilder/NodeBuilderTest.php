@@ -20,9 +20,6 @@ use TreeBuilder\Transformation\TransformationProvider;
  */
 class NodeBuilderTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var NodeBuilder */
-    protected $builder;
-
     public function setUp()
     {
     }
@@ -134,6 +131,16 @@ class NodeBuilderTest extends \PHPUnit_Framework_TestCase
         $mock = $this->mockedNodeBuilder();
 
         $this->assertEquals($mock->buildValue('blablabla'), $mock('blablabla'));
+    }
+
+    public function testExcludeCachingProblemsWhenKeyAndValueBuildAreCalledSeparately()
+    {
+        $node = $this->mockedNodeBuilder();
+        $node->key(function($v){ return $v; });
+        $node->buildKey('giovanni');
+        list($key, $value) = $node->buildKeyAndValue('roberto');
+
+        $this->assertEquals('roberto', $key);
     }
 }
 

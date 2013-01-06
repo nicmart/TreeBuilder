@@ -19,8 +19,6 @@ use TreeBuilder\Transformation\TransformationProvider;
  */
 class TreeBuilder extends NodeBuilder
 {
-    protected $keyCounter = 0;
-
     /**
      * @var NodeBuilder[]
      */
@@ -33,12 +31,8 @@ class TreeBuilder extends NodeBuilder
     {
         $result = array();
         $baseElement = $this->baseElement($element);
-        $this->keyCounter = 0;
 
-        foreach ($this->getChildren() as $child) {
-            list($key, $value) = $child->buildKeyAndValue($baseElement);
-            $result[$key] = $value;
-        }
+        $this->addBuildedValueToResult($baseElement, $result);
 
         return $result;
     }
@@ -76,7 +70,6 @@ class TreeBuilder extends NodeBuilder
 
         $this->addChild($leaf);
         $leaf->setParent($this);
-        $leaf->key($this->keyCounterSelector());
 
         return $leaf;
     }
@@ -94,7 +87,6 @@ class TreeBuilder extends NodeBuilder
 
         $this->addChild($tree);
         $tree->setParent($this);
-        $tree->key($this->keyCounterSelector());
 
         return $tree;
     }
@@ -112,16 +104,30 @@ class TreeBuilder extends NodeBuilder
 
         $this->addChild($tree);
         $tree->setParent($this);
-        $tree->key($this->keyCounterSelector());
 
         return $tree;
     }
 
-    private function keyCounterSelector()
+    /**
+     * Given a baselement, iterates through children and build key-value pairs, and add
+     * to the given $result array
+     *
+     * @param $baseElement
+     * @param array $result
+     *
+     * @return $this
+     */
+    protected function addBuildedValueToResult($baseElement, array &$result)
     {
-        $counter = &$this->keyCounter;
-        return function() use(&$counter) {
-              return $counter++;
-        };
+        foreach ($this->getChildren() as $child) {
+            list($key, $value) = $child->buildKeyAndValue($baseElement);
+            if ($key instanceof NoKey) {
+                $result[] = $value;
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $this;
     }
 }

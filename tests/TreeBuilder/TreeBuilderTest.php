@@ -145,6 +145,8 @@ class TreeBuilderTest extends \PHPUnit_Framework_TestCase
 
         $keys = array($child1->buildKey(''), $child2->buildKey(''), $child3->buildKey(''));
 
-        $this->assertEquals(array(0,1,2), $keys);
+        $this->assertInstanceOf('\TreeBuilder\NoKey', $keys[0]);
+        $this->assertInstanceOf('\TreeBuilder\NoKey', $keys[1]);
+        $this->assertInstanceOf('\TreeBuilder\NoKey', $keys[2]);
     }
 }

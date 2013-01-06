@@ -30,16 +30,12 @@ class ForeachTreeBuilder extends TreeBuilder
     {
         $result = array();
         $baseElement = $this->baseElement($element);
-        $this->keyCounter = 0;
 
         if (!is_array($baseElement) && !$baseElement instanceof \Traversable)
             throw new \UnexpectedValueException('You have specified a value that the base selector has not transformed into a traversable object');
 
         foreach ($baseElement as $subBaseElement) {
-            foreach ($this->getChildren() as $child) {
-                list($key, $value) = $child->buildKeyAndValue($subBaseElement);
-                $result[$key] = $value;
-            }
+            $this->addBuildedValueToResult($subBaseElement, $result);
         }
 
         return $result;

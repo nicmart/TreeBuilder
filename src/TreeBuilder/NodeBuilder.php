@@ -28,8 +28,8 @@ abstract class NodeBuilder
      */
     private $transformationProvider;
 
-    private $cacheBaseElement = false;
-    private $cachedBaseElement;
+    protected $cacheBaseElement = false;
+    protected $cachedBaseElement;
 
     /**
      * @param null|callable $baseSelector
@@ -44,7 +44,7 @@ abstract class NodeBuilder
 
         $this->baseSelector = $this->resolveSelector(array($baseSelector));
 
-        $this->keySelector = $this->resolveSelector(array(null));
+        $this->key(function() { return new NoKey; });
     }
 
     /**
@@ -116,16 +116,14 @@ abstract class NodeBuilder
      */
     public function buildKeyAndValue($element)
     {
-        $this->cacheBaseElement = true;
+        $this->startCachingBaseElement();
 
         $key = $this->buildKey($element);
         $value = $this->buildValue($element);
 
-        $this->cacheBaseElement = false;
-        $this->cachedBaseElement = null;
+        $this->stopCachingBaseElement();
 
         return array($key, $value);
-
     }
 
     /**
@@ -153,12 +151,18 @@ abstract class NodeBuilder
      */
     protected function baseElement($element)
     {
-        if (!$this->cacheBaseElement || !isset($this->cachedBaseElement)) {
-            $baseSelector = $this->baseSelector;
-            $this->cachedBaseElement = call_user_func($baseSelector, $element);
+        $baseSelector = $this->baseSelector;
+
+        if ($this->cacheBaseElement) {
+            if (!isset($this->cachedBaseElement)) {
+                $this->cachedBaseElement = call_user_func($baseSelector, $element);
+            }
+            $baseElement = $this->cachedBaseElement;
+        } else {
+            $baseElement = call_user_func($baseSelector, $element);
         }
 
-        return $this->cachedBaseElement;
+        return $baseElement;
     }
 
     /**
@@ -219,5 +223,17 @@ abstract class NodeBuilder
     private function isClosureOrInvokable($value)
     {
         return is_object($value) && method_exists($value, '__invoke');
+    }
+
+    private function startCachingBaseElement()
+    {
+        $this->cacheBaseElement = true;
+        $this->cachedBaseElement = null;
+    }
+
+    private function stopCachingBaseElement()
+    {
+        $this->cacheBaseElement = false;
+        $this->cachedBaseElement = null;
     }
 }
