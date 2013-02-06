@@ -1,37 +1,37 @@
 {
-    "hash": "345b7ce5c64c9ea4ffbcc0f4a24989e4",
+    "hash": "1eae0eb8b2e78f011bc788204d15631a",
     "packages": [
         {
             "name": "symfony/property-access",
-            "version": "2.2.x-dev",
+            "version": "dev-master",
             "target-dir": "Symfony/Component/PropertyAccess",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/PropertyAccess",
-                "reference": "v2.2.0-RC1"
+                "reference": "172a6164efbd0026d7418ae882341892eeef8729"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/PropertyAccess/zipball/v2.2.0-RC1",
-                "reference": "v2.2.0-RC1",
+                "url": "https://api.github.com/repos/symfony/PropertyAccess/zipball/172a6164efbd0026d7418ae882341892eeef8729",
+                "reference": "172a6164efbd0026d7418ae882341892eeef8729",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "1360009665",
+            "time": "2013-01-31 21:39:01",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\PropertyAccess\\": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -48,15 +48,15 @@
             "description": "Symfony PropertyAccess Component",
             "homepage": "http://symfony.com",
             "keywords": [
-                "reflection",
-                "array",
-                "injection",
-                "object",
                 "access",
+                "array",
                 "extraction",
                 "index",
+                "injection",
+                "object",
                 "property",
-                "property path"
+                "property path",
+                "reflection"
             ]
         }
     ],
